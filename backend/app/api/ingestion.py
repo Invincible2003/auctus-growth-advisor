@@ -149,6 +149,26 @@ def upload_dataset(
                 else:
                     record_date = pd.to_datetime(dt_val).date()
                     
+                # Check for customer_id synonyms
+                cust_candidates = ['customer_id', 'customerkey', 'customer_key', 'cust_id', 'customer', 'custkey', 'customer id', 'customer key']
+                cust_val = None
+                for cand in cust_candidates:
+                    if cand in row and pd.notna(row[cand]):
+                        cust_val = str(row[cand])
+                        break
+                if not cust_val:
+                    cust_val = 'Guest'
+                    
+                # Check for region synonyms
+                region_candidates = ['region', 'territorykey', 'territory_key', 'location', 'country', 'state', 'city', 'territory id', 'territory key']
+                region_val = None
+                for cand in region_candidates:
+                    if cand in row and pd.notna(row[cand]):
+                        region_val = str(row[cand])
+                        break
+                if not region_val:
+                    region_val = 'Local'
+
                 sales_records.append(SalesRecord(
                     dataset_id=db_dataset.id,
                     date=record_date,
@@ -156,8 +176,8 @@ def upload_dataset(
                     quantity=int(row.get('quantity', 1)),
                     product_name=str(row.get('product_name', 'General SKU')),
                     category=str(row.get('category', 'Uncategorized')),
-                    customer_id=str(row.get('customer_id', 'Guest')) if pd.notna(row.get('customer_id')) else 'Guest',
-                    region=str(row.get('region', 'Local')) if pd.notna(row.get('region')) else 'Local'
+                    customer_id=cust_val,
+                    region=region_val
                 ))
             db.bulk_save_objects(sales_records)
             

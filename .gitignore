@@ -40,3 +40,7 @@ D:/AUCTUS/reports/*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# System and temporary uploads
+datasets/
+*.stackdump

@@ -31,10 +31,33 @@ class CleaningService:
             })
 
         # 2. Validate/Format Dates
+        # Standardize date column names
+        date_candidates = ['orderdate', 'order_date', 'transactiondate', 'transaction_date', 'salesdate', 'sales_date', 'sale_date']
+        for cand in date_candidates:
+            if cand in df_clean.columns:
+                # If there's already a 'date' column but it is homogeneous (all values same) and the candidate has multiple distinct dates, prioritize candidate
+                if 'date' in df_clean.columns:
+                    if df_clean['date'].nunique() <= 1 and df_clean[cand].nunique() > 1:
+                        df_clean['date'] = df_clean[cand]
+                        logs.append({
+                            "issue": "Homogeneous Date Column",
+                            "action": f"Replaced 'date' with historic transaction dates from '{cand}'",
+                            "count": len(df_clean)
+                        })
+                        break
+                else:
+                    df_clean['date'] = df_clean[cand]
+                    logs.append({
+                        "issue": "Mapped Date Column",
+                        "action": f"Mapped '{cand}' to standard 'date' column",
+                        "count": len(df_clean)
+                    })
+                    break
+
         if 'date' in df_clean.columns:
             # Coerce dates, drop unparseable dates
             original_date_count = df_clean['date'].isna().sum()
-            df_clean['date'] = pd.to_datetime(df_clean['date'], errors='coerce')
+            df_clean['date'] = pd.to_datetime(df_clean['date'], format='mixed', errors='coerce')
             unparseable = df_clean['date'].isna().sum() - original_date_count
             if unparseable > 0:
                 df_clean = df_clean.dropna(subset=['date'])

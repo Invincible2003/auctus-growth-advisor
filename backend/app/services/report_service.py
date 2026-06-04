@@ -41,11 +41,13 @@ class BrandedPDF(FPDF if has_fpdf else object):
         self.set_fill_color(11, 25, 44) # Dark blue (#0B192C)
         self.rect(0, 0, 210, 15, 'F')
         
+        # Position text inside the bar
+        self.set_y(4)
         self.set_text_color(255, 255, 255)
         self.set_font('Arial', 'B', 10)
-        self.cell(0, -6, f"{settings.PROJECT_NAME} - AI Growth Report", 0, 0, 'L')
-        self.cell(0, -6, settings.BRAND_OWNER, 0, 1, 'R')
-        self.ln(10)
+        self.cell(95, 7, f"{settings.PROJECT_NAME} - AI Growth Report", 0, 0, 'L')
+        self.cell(95, 7, settings.BRAND_OWNER, 0, 1, 'R')
+        self.set_y(20) # Reset Y position for body content
 
     def footer(self):
         if not has_fpdf:
