@@ -4,7 +4,7 @@ import json
 import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
 from sqlalchemy.orm import Session
-from typing import Any, List
+from typing import Any, List, Dict
 from datetime import datetime
 
 from app.core.database import get_db
