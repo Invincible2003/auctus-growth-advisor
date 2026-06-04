@@ -1,0 +1,42 @@
+# AUCTUS Git ignore rules
+# Brand Owner: Made by Aryan Pandey
+
+# Caches
+__pycache__/
+*.pyc
+.pytest_cache/
+.eslintcache
+.vite-inspect
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Environment files
+.env
+.env.*.local
+
+# Databases & local databases fallback
+*.db
+*.sqlite3
+database/auctus.db
+
+# Virtual Environments
+venv/
+.venv/
+env/
+Active.Build/
+
+# Document reports downloads outputs
+reports/*.pdf
+reports/*.docx
+reports/*.pptx
+D:/AUCTUS/reports/*
+
+# IDE logs and settings
+.vscode/
+.idea/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
