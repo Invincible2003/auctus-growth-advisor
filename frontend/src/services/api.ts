@@ -1,7 +1,14 @@
 // AUCTUS Client API Services
 // Brand Owner: Made by Aryan Pandey
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
+let base_url = import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
+if (base_url && !base_url.endsWith("/api/v1")) {
+  if (base_url.endsWith("/")) {
+    base_url = base_url.slice(0, -1);
+  }
+  base_url = `${base_url}/api/v1`;
+}
+const API_BASE_URL = base_url;
 
 // Helper to retrieve token
 const getAuthHeaders = (): Record<string, string> => {
