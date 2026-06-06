@@ -1,7 +1,7 @@
 // AUCTUS Client API Services
 // Brand Owner: Made by Aryan Pandey
 
-let base_url = import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
+let base_url = import.meta.env.VITE_API_URL || "https://auctus-growth-advisor.onrender.com/api/v1";
 if (base_url && !base_url.endsWith("/api/v1")) {
   if (base_url.endsWith("/")) {
     base_url = base_url.slice(0, -1);
