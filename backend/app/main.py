@@ -47,7 +47,7 @@ app.include_router(admin.router, prefix=settings.API_V1_STR)
 def health_check():
     """Simple status check verifying the backend service is up and running."""
     import google.generativeai as genai
-    from app.services.ai_service import is_gemini_active
+    from app.services.ai_service import is_gemini_active, last_gemini_error
     
     gemini_test_status = "inactive"
     if is_gemini_active:
@@ -65,7 +65,8 @@ def health_check():
         "database": "connected",
         "gemini_active": is_gemini_active,
         "gemini_version": genai.__version__,
-        "gemini_test_status": gemini_test_status
+        "gemini_test_status": gemini_test_status,
+        "gemini_last_chat_error": last_gemini_error
     }
 
 @app.get("/", tags=["System Health"])

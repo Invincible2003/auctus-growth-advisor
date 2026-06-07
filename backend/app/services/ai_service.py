@@ -15,6 +15,8 @@ if settings.GEMINI_API_KEY:
     except Exception as e:
         logger.error(f"Failed to initialize Gemini API client: {e}")
 
+last_gemini_error = "None"
+
 class AIService:
     @staticmethod
     def _call_gemini(prompt: str, system_instruction: str = "") -> str:
@@ -29,6 +31,8 @@ class AIService:
             response = model.generate_content(full_prompt)
             return response.text.strip()
         except Exception as e:
+            global last_gemini_error
+            last_gemini_error = str(e)
             logger.error(f"Gemini API call failed: {e}")
             return ""
 
