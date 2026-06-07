@@ -48,13 +48,24 @@ def health_check():
     """Simple status check verifying the backend service is up and running."""
     import google.generativeai as genai
     from app.services.ai_service import is_gemini_active
+    
+    gemini_test_status = "inactive"
+    if is_gemini_active:
+        try:
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            res = model.generate_content("hello")
+            gemini_test_status = f"success: {res.text.strip()[:30]}"
+        except Exception as e:
+            gemini_test_status = f"error: {str(e)}"
+            
     return {
         "status": "online",
         "service": settings.PROJECT_NAME,
         "branding": settings.BRAND_OWNER,
         "database": "connected",
         "gemini_active": is_gemini_active,
-        "gemini_version": genai.__version__
+        "gemini_version": genai.__version__,
+        "gemini_test_status": gemini_test_status
     }
 
 @app.get("/", tags=["System Health"])
