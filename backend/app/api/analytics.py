@@ -29,7 +29,7 @@ def get_user_sales_df(user_id: str, db: Session) -> pd.DataFrame:
     for r in records:
         data.append({
             "id": r.id,
-            "date": pd.to_datetime(r.date),
+            "date": r.date,
             "amount": float(r.amount),
             "quantity": int(r.quantity),
             "product_name": r.product_name,
@@ -37,7 +37,10 @@ def get_user_sales_df(user_id: str, db: Session) -> pd.DataFrame:
             "customer_id": r.customer_id or 'Guest',
             "region": r.region or 'Local'
         })
-    return pd.DataFrame(data)
+    df = pd.DataFrame(data)
+    if not df.empty:
+        df['date'] = pd.to_datetime(df['date'])
+    return df
 
 def get_user_reviews_df(user_id: str, db: Session) -> pd.DataFrame:
     """Helper to load all reviews for a user into a pandas DataFrame."""
