@@ -29,6 +29,14 @@ const request = async (endpoint: string, options: RequestInit = {}): Promise<any
     headers,
   });
 
+  if (response.status === 401) {
+    localStorage.removeItem("auctus_token");
+    localStorage.removeItem("auctus_user");
+    if (typeof window !== "undefined" && !window.location.pathname.includes("/login") && !window.location.pathname.includes("/signup")) {
+      window.location.href = "/login";
+    }
+  }
+
   if (!response.ok) {
     let errorDetail = "API request failed";
     try {
