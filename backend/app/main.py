@@ -46,11 +46,15 @@ app.include_router(admin.router, prefix=settings.API_V1_STR)
 @app.get("/health", tags=["System Health"])
 def health_check():
     """Simple status check verifying the backend service is up and running."""
+    import google.generativeai as genai
+    from app.services.ai_service import is_gemini_active
     return {
         "status": "online",
         "service": settings.PROJECT_NAME,
         "branding": settings.BRAND_OWNER,
-        "database": "connected"
+        "database": "connected",
+        "gemini_active": is_gemini_active,
+        "gemini_version": genai.__version__
     }
 
 @app.get("/", tags=["System Health"])
