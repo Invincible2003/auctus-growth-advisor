@@ -25,4 +25,3 @@ databases:
   # Supabase compatible PostgreSQL database
   - name: auctus-db
     plan: free
-    postgresVersion: 15
