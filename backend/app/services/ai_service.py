@@ -24,17 +24,23 @@ class AIService:
         if not is_gemini_active:
             return ""
         
-        try:
-            # Combine system instructions and user prompt for Gemini 1.5
-            full_prompt = f"{system_instruction}\n\nUser Request:\n{prompt}"
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            response = model.generate_content(full_prompt)
-            return response.text.strip()
-        except Exception as e:
-            global last_gemini_error
-            last_gemini_error = str(e)
-            logger.error(f"Gemini API call failed: {e}")
-            return ""
+        full_prompt = f"{system_instruction}\n\nUser Request:\n{prompt}"
+        models_to_try = ['gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-pro', 'gemini-2.0-flash']
+        errors = []
+        
+        for model_name in models_to_try:
+            try:
+                model = genai.GenerativeModel(model_name)
+                response = model.generate_content(full_prompt)
+                return response.text.strip()
+            except Exception as e:
+                errors.append(f"{model_name}: {str(e)}")
+                logger.warning(f"Gemini call failed with model {model_name}: {e}")
+                
+        global last_gemini_error
+        last_gemini_error = "; ".join(errors)
+        logger.error(f"All Gemini models failed. Errors: {last_gemini_error}")
+        return ""
 
     @classmethod
     def get_chat_response(cls, history: list, message: str, dataset_context: str = "") -> str:

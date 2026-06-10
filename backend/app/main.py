@@ -51,12 +51,18 @@ def health_check():
     
     gemini_test_status = "inactive"
     if is_gemini_active:
-        try:
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            res = model.generate_content("hello")
-            gemini_test_status = f"success: {res.text.strip()[:30]}"
-        except Exception as e:
-            gemini_test_status = f"error: {str(e)}"
+        models_to_try = ['gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-pro', 'gemini-2.0-flash']
+        errors = []
+        for model_name in models_to_try:
+            try:
+                model = genai.GenerativeModel(model_name)
+                res = model.generate_content("hello")
+                gemini_test_status = f"success: {res.text.strip()[:30]}"
+                break
+            except Exception as e:
+                errors.append(f"{model_name}: {str(e)}")
+        if not gemini_test_status.startswith("success:"):
+            gemini_test_status = f"error: {'; '.join(errors)}"
             
     return {
         "status": "online",
